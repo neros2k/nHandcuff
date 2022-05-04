@@ -1,0 +1,5 @@
+name: nHandCuff
+version: '${project.version}'
+main: n2k.nhandcuff.nHandCuff
+api-version: 1.17
+authors: [ n2k ]
