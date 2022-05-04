@@ -22,10 +22,10 @@ public class Engine implements IEngine {
     private Integer BAT_TICK_ID;
     private Integer CUFF_TICK_ID;
     private Bat BAT;
-    public Engine(IInteractor INTERACTOR, @NotNull Player PLAYER, Boolean isCuffed) {
+    public Engine(IInteractor INTERACTOR, @NotNull Player PLAYER, Boolean CUFFED) {
         this.INTERACTOR = INTERACTOR;
         this.PLAYER = PLAYER;
-        this.STATE = new State(false);
+        this.STATE = new State(CUFFED);
     }
     @Override
     public void init() {
@@ -35,20 +35,20 @@ public class Engine implements IEngine {
     public void start() {
         this.BAT = (Bat) PLAYER.getWorld().spawnEntity(PLAYER.getLocation(), EntityType.BAT);
         this.BAT.setAI(false);
+        this.BAT.setCollidable(false);
         BukkitScheduler SCHEDULER = Bukkit.getScheduler();
         this.BAT_TICK_ID = SCHEDULER.runTaskTimer(
-                this.INTERACTOR.getPlugin(), this::batTick, 0L, 8L)
+                this.INTERACTOR.getPlugin(), this::batTick, 0L, 1L)
                 .getTaskId();
     }
     @Override
     public void stop() {
-        BukkitScheduler SCHEDULER = Bukkit.getScheduler();
-        SCHEDULER.cancelTask(this.BAT_TICK_ID);
-        this.uncuff();
-        this.BAT.damage(1000D);
+        Bukkit.getScheduler().cancelTask(this.BAT_TICK_ID);
+        this.BAT.remove();
         if(this.STATE.isCuffed()) {
             Location LOCATION = this.PLAYER.getLocation();
             Objects.requireNonNull(LOCATION.getWorld()).dropItem(LOCATION, new ItemStack(Material.LEAD));
+            this.uncuff();
         }
     }
     @Override
@@ -69,19 +69,19 @@ public class Engine implements IEngine {
     }
     @Override
     public void cuffTick() {
-        Player BINDER = Bukkit.getPlayer(this.STATE.getBinder());
-        if(BINDER != null) {
+        Player HOLDER = Bukkit.getPlayer(this.STATE.getHolder());
+        if(HOLDER != null) {
             Location LOCATION = this.PLAYER.getLocation();
-            Location BINDER_LOCATION = BINDER.getLocation();
-            double DISTANCE = LOCATION.distanceSquared(BINDER_LOCATION);
+            Location HOLDER_LOCATION = HOLDER.getLocation();
+            double DISTANCE = LOCATION.distanceSquared(HOLDER_LOCATION);
             if(DISTANCE > 7) {
-                double MULTIPLY = DISTANCE/0.14D;
-                Vector VECTOR = BINDER_LOCATION.toVector().subtract(LOCATION.toVector()).multiply(MULTIPLY);
+                double MULTIPLY = DISTANCE/120;
+                Vector VECTOR = HOLDER_LOCATION.toVector().subtract(LOCATION.toVector()).multiply(MULTIPLY);
                 this.PLAYER.setVelocity(VECTOR);
             }
         }
         this.PLAYER.addPotionEffect(
-                new PotionEffect(PotionEffectType.SLOW, 1, 2)
+                new PotionEffect(PotionEffectType.SLOW, 20, 2)
         );
     }
     @Override

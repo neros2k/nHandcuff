@@ -11,9 +11,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import java.util.ArrayList;
 public class CuffPresenter extends APresenter implements Listener {
+    private final ArrayList<String> COOLDOWN;
     public CuffPresenter(IInteractor INTERACTOR) {
         super(INTERACTOR);
+        this.COOLDOWN = new ArrayList<>();
     }
     @Override
     public void init() {
@@ -21,24 +24,27 @@ public class CuffPresenter extends APresenter implements Listener {
     }
     @EventHandler
     public void onPlayerInteract(@NotNull PlayerInteractAtEntityEvent EVENT) {
-        if(!EVENT.isCancelled()) {
-            Player PLAYER = EVENT.getPlayer();
-            if(EVENT.getRightClicked() instanceof Player BIND_PLAYER) {
+        Player HOLDER = EVENT.getPlayer();
+        String HOLDER_NAME = HOLDER.getName();
+        if(!EVENT.isCancelled() && !this.COOLDOWN.contains(HOLDER_NAME)) {
+            if(EVENT.getRightClicked() instanceof Player PLAYER) {
                 IInteractor INTERACTOR = this.getInteractor();
-                IEngine ENGINE = INTERACTOR.getEngine(BIND_PLAYER.getName());
-                Material MATERIAL = PLAYER.getInventory().getItemInMainHand().getType();
-                if(ENGINE.getState().isCuffed() && ENGINE.getState().getBinder().equals(PLAYER.getName())) {
-                    INTERACTOR.uncuffPlayer(BIND_PLAYER);
-                    INTERACTOR.unbind(BIND_PLAYER);
-                    PLAYER.getInventory().addItem(new ItemStack(Material.LEAD));
+                IEngine ENGINE = INTERACTOR.getEngine(PLAYER.getName());
+                Material MATERIAL = HOLDER.getInventory().getItemInMainHand().getType();
+                if(ENGINE.getState().isCuffed() && ENGINE.getState().getHolder().equals(HOLDER_NAME)) {
+                    INTERACTOR.uncuffPlayer(PLAYER, HOLDER);
+                    if(HOLDER.getGameMode() != GameMode.CREATIVE) {
+                        HOLDER.getInventory().addItem(new ItemStack(Material.LEAD));
+                    }
                 } else if(MATERIAL == Material.LEAD) {
-                    INTERACTOR.cuffPlayer(BIND_PLAYER);
-                    INTERACTOR.bind(PLAYER, BIND_PLAYER);
-                    if(PLAYER.getGameMode() != GameMode.CREATIVE) {
-                        ItemStack ITEM = PLAYER.getInventory().getItemInMainHand();
+                    INTERACTOR.cuffPlayer(PLAYER, HOLDER);
+                    if(HOLDER.getGameMode() != GameMode.CREATIVE) {
+                        ItemStack ITEM = HOLDER.getInventory().getItemInMainHand();
                         ITEM.setAmount(ITEM.getAmount() - 1);
                     }
                 }
+                this.COOLDOWN.add(HOLDER_NAME);
+                Bukkit.getScheduler().runTaskLater(INTERACTOR.getPlugin(), () -> COOLDOWN.remove(HOLDER_NAME), 2L);
             }
         }
     }

@@ -34,41 +34,32 @@ public class Interactor implements IInteractor {
             ENGINE.init();
             ENGINE.start();
             this.ENGINE_MAP.put(NAME, ENGINE);
-        } else {
-            this.ENGINE_MAP.get(NAME).start();
         }
     }
     @Override
     public void unloadEngine(String NAME) {
         if(this.ENGINE_MAP.containsKey(NAME)) {
             this.ENGINE_MAP.get(NAME).stop();
+            this.ENGINE_MAP.remove(NAME);
         }
     }
     @Override
-    public void cuffPlayer(@NotNull Player PLAYER) {
+    public void cuffPlayer(@NotNull Player PLAYER, Player HOLDER) {
         String NAME = PLAYER.getName();
-        if(this.ENGINE_MAP.containsKey(NAME)) {
-            this.ENGINE_MAP.get(NAME).cuff();
-        }
+        Bat BAT = this.getEngine(PLAYER.getName()).getBat();
+        IEngine ENGINE = this.getEngine(NAME);
+        BAT.setLeashHolder(HOLDER);
+        ENGINE.getState().setHolder(HOLDER.getName());
+        ENGINE.cuff();
     }
     @Override
-    public void uncuffPlayer(@NotNull Player PLAYER) {
+    public void uncuffPlayer(@NotNull Player PLAYER, Player HOLDER) {
         String NAME = PLAYER.getName();
-        if(this.ENGINE_MAP.containsKey(NAME)) {
-            this.ENGINE_MAP.get(NAME).uncuff();
-        }
-    }
-    @Override
-    public void bind(@NotNull Player BINDED, Player BINDER) {
-        Bat BAT = this.getEngine(BINDED.getName()).getBat();
-        if(!BAT.isLeashed()) BAT.setLeashHolder(BINDER);
-        this.getEngine(BINDED.getName()).getState().setBinder(BINDER.getName());
-    }
-    @Override
-    public void unbind(@NotNull Player BINDED) {
-        Bat BAT = this.getEngine(BINDED.getName()).getBat();
-        if(BAT.isLeashed()) BAT.setLeashHolder(null);
-        this.getEngine(BINDED.getName()).getState().setBinder(null);
+        Bat BAT = this.getEngine(PLAYER.getName()).getBat();
+        IEngine ENGINE = this.getEngine(NAME);
+        BAT.setLeashHolder(null);
+        ENGINE.uncuff();
+        ENGINE.getState().setHolder("");
     }
     @Override
     public IEngine getEngine(String NAME) {

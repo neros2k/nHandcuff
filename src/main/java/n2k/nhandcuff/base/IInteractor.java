@@ -4,10 +4,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 public interface IInteractor extends IInitializable {
     void loadEngine(Player PLAYER);
     void unloadEngine(String NAME);
-    void cuffPlayer(Player PLAYER);
-    void uncuffPlayer(Player PLAYER);
-    void bind(Player BINDED, Player BINDER);
-    void unbind(Player BINDED);
+    void cuffPlayer(Player PLAYER, Player HOLDER);
+    void uncuffPlayer(Player PLAYER, Player HOLDER);
     IEngine getEngine(String NAME);
     JavaPlugin getPlugin();
 }
