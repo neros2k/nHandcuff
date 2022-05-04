@@ -2,7 +2,6 @@ package n2k.nhandcuff.core;
 import n2k.nhandcuff.base.APresenter;
 import n2k.nhandcuff.base.IEngine;
 import n2k.nhandcuff.base.IInteractor;
-import n2k.nhandcuff.base.object.State;
 import n2k.nhandcuff.core.presenter.CuffPresenter;
 import n2k.nhandcuff.core.presenter.OtherPresenter;
 import org.bukkit.entity.Bat;
@@ -62,7 +61,7 @@ public class Interactor implements IInteractor {
     @Override
     public void bind(@NotNull Player BINDED, Player BINDER) {
         Bat BAT = this.getEngine(BINDED.getName()).getBat();
-        if(!BAT.isLeashed()) BAT.setLeashHolder(BINDED);
+        if(!BAT.isLeashed()) BAT.setLeashHolder(BINDER);
         this.getEngine(BINDED.getName()).getState().setBinder(BINDER.getName());
     }
     @Override

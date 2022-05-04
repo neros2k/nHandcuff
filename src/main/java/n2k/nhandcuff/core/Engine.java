@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 public class Engine implements IEngine {
@@ -19,7 +20,6 @@ public class Engine implements IEngine {
     private final Player PLAYER;
     private final State STATE;
     private Integer BAT_TICK_ID;
-    private Integer PLAYER_TICK_ID;
     private Integer CUFF_TICK_ID;
     private Bat BAT;
     public Engine(IInteractor INTERACTOR, @NotNull Player PLAYER, Boolean isCuffed) {
@@ -37,17 +37,13 @@ public class Engine implements IEngine {
         this.BAT.setAI(false);
         BukkitScheduler SCHEDULER = Bukkit.getScheduler();
         this.BAT_TICK_ID = SCHEDULER.runTaskTimer(
-                this.INTERACTOR.getPlugin(), this::batTick, 0L, 80L)
-                .getTaskId();
-        this.PLAYER_TICK_ID = SCHEDULER.runTaskTimer(
-                this.INTERACTOR.getPlugin(), this::playerTick, 40L, 80L)
+                this.INTERACTOR.getPlugin(), this::batTick, 0L, 8L)
                 .getTaskId();
     }
     @Override
     public void stop() {
         BukkitScheduler SCHEDULER = Bukkit.getScheduler();
         SCHEDULER.cancelTask(this.BAT_TICK_ID);
-        SCHEDULER.cancelTask(this.PLAYER_TICK_ID);
         this.uncuff();
         this.BAT.damage(1000D);
         if(this.STATE.isCuffed()) {
@@ -72,13 +68,20 @@ public class Engine implements IEngine {
         this.BAT.teleport(this.PLAYER.getLocation());
     }
     @Override
-    public void playerTick() {
-        this.PLAYER.teleport(this.BAT.getLocation());
-    }
-    @Override
     public void cuffTick() {
+        Player BINDER = Bukkit.getPlayer(this.STATE.getBinder());
+        if(BINDER != null) {
+            Location LOCATION = this.PLAYER.getLocation();
+            Location BINDER_LOCATION = BINDER.getLocation();
+            double DISTANCE = LOCATION.distanceSquared(BINDER_LOCATION);
+            if(DISTANCE > 7) {
+                double MULTIPLY = DISTANCE/0.14D;
+                Vector VECTOR = BINDER_LOCATION.toVector().subtract(LOCATION.toVector()).multiply(MULTIPLY);
+                this.PLAYER.setVelocity(VECTOR);
+            }
+        }
         this.PLAYER.addPotionEffect(
-                new PotionEffect(PotionEffectType.SLOW, 1, 1)
+                new PotionEffect(PotionEffectType.SLOW, 1, 2)
         );
     }
     @Override
