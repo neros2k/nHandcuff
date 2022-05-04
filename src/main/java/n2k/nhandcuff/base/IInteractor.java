@@ -1,7 +1,7 @@
 package n2k.nhandcuff.base;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-public interface IInteractor extends IInitializable {
+public interface IInteractor {
     void loadEngine(Player PLAYER);
     void unloadEngine(String NAME);
     void cuffPlayer(Player PLAYER);

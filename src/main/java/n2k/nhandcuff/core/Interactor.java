@@ -1,7 +1,6 @@
 package n2k.nhandcuff.core;
 import n2k.nhandcuff.base.IEngine;
 import n2k.nhandcuff.base.IInteractor;
-import n2k.nhandcuff.base.ISaver;
 import n2k.nhandcuff.base.object.State;
 import org.bukkit.entity.Bat;
 import org.bukkit.entity.Player;
@@ -10,23 +9,17 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 public class Interactor implements IInteractor {
-    private final ISaver SAVER;
     private final Map<String, IEngine> ENGINE_MAP;
     private final JavaPlugin PLUGIN;
     public Interactor(JavaPlugin PLUGIN) {
-        this.SAVER = new Saver();
         this.ENGINE_MAP = new HashMap<>();
         this.PLUGIN = PLUGIN;
-    }
-    @Override
-    public void init() {
-        this.SAVER.init();
     }
     @Override
     public void loadEngine(@NotNull Player PLAYER) {
         String NAME = PLAYER.getName();
         if(!this.ENGINE_MAP.containsKey(NAME)) {
-            State STATE = this.SAVER.getByName(NAME);
+            State STATE = new State(PLAYER.getName(), false);
             IEngine ENGINE = new Engine(this, PLAYER, STATE.isCuffed());
             ENGINE.init();
             ENGINE.start();
@@ -57,11 +50,13 @@ public class Interactor implements IInteractor {
     public void bind(@NotNull Player BINDED, Player BINDER) {
         Bat BAT = this.getEngine(BINDED.getName()).getBat();
         if(!BAT.isLeashed()) BAT.setLeashHolder(BINDED);
+        this.getEngine(BINDED.getName()).getState().setBinder(BINDER.getName());
     }
     @Override
     public void unbind(@NotNull Player BINDED) {
         Bat BAT = this.getEngine(BINDED.getName()).getBat();
         if(BAT.isLeashed()) BAT.setLeashHolder(null);
+        this.getEngine(BINDED.getName()).getState().setBinder(null);
     }
     @Override
     public IEngine getEngine(String NAME) {
