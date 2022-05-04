@@ -1,7 +1,10 @@
 package n2k.nhandcuff.core;
+import n2k.nhandcuff.base.APresenter;
 import n2k.nhandcuff.base.IEngine;
 import n2k.nhandcuff.base.IInteractor;
 import n2k.nhandcuff.base.object.State;
+import n2k.nhandcuff.core.presenter.CuffPresenter;
+import n2k.nhandcuff.core.presenter.OtherPresenter;
 import org.bukkit.entity.Bat;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -9,11 +12,20 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 public class Interactor implements IInteractor {
+    private final APresenter CUFF_PRESENTER;
+    private final APresenter OTHER_PRESENTER;
     private final Map<String, IEngine> ENGINE_MAP;
     private final JavaPlugin PLUGIN;
     public Interactor(JavaPlugin PLUGIN) {
+        this.CUFF_PRESENTER = new CuffPresenter(this);
+        this.OTHER_PRESENTER = new OtherPresenter(this);
         this.ENGINE_MAP = new HashMap<>();
         this.PLUGIN = PLUGIN;
+    }
+    @Override
+    public void init() {
+        this.CUFF_PRESENTER.init();
+        this.OTHER_PRESENTER.init();
     }
     @Override
     public void loadEngine(@NotNull Player PLAYER) {

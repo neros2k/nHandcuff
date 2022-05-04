@@ -3,13 +3,17 @@ import n2k.nhandcuff.base.IEngine;
 import n2k.nhandcuff.base.IInteractor;
 import n2k.nhandcuff.base.object.State;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Bat;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.jetbrains.annotations.NotNull;
+import java.util.Objects;
 public class Engine implements IEngine {
     private final IInteractor INTERACTOR;
     private final Player PLAYER;
@@ -46,6 +50,10 @@ public class Engine implements IEngine {
         SCHEDULER.cancelTask(this.PLAYER_TICK_ID);
         this.uncuff();
         this.BAT.damage(1000D);
+        if(this.STATE.isCuffed()) {
+            Location LOCATION = this.PLAYER.getLocation();
+            Objects.requireNonNull(LOCATION.getWorld()).dropItem(LOCATION, new ItemStack(Material.LEAD));
+        }
     }
     @Override
     public void cuff() {
