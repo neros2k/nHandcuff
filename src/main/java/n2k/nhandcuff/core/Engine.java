@@ -21,7 +21,7 @@ public class Engine implements IEngine {
     public Engine(IInteractor INTERACTOR, @NotNull Player PLAYER, Boolean isCuffed) {
         this.INTERACTOR = INTERACTOR;
         this.PLAYER = PLAYER;
-        this.STATE = new State(PLAYER.getName(), false);
+        this.STATE = new State(false);
     }
     @Override
     public void init() {
@@ -44,6 +44,8 @@ public class Engine implements IEngine {
         BukkitScheduler SCHEDULER = Bukkit.getScheduler();
         SCHEDULER.cancelTask(this.BAT_TICK_ID);
         SCHEDULER.cancelTask(this.PLAYER_TICK_ID);
+        this.uncuff();
+        this.BAT.damage(1000D);
     }
     @Override
     public void cuff() {

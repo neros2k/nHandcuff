@@ -19,11 +19,12 @@ public class Interactor implements IInteractor {
     public void loadEngine(@NotNull Player PLAYER) {
         String NAME = PLAYER.getName();
         if(!this.ENGINE_MAP.containsKey(NAME)) {
-            State STATE = new State(PLAYER.getName(), false);
-            IEngine ENGINE = new Engine(this, PLAYER, STATE.isCuffed());
+            IEngine ENGINE = new Engine(this, PLAYER, false);
             ENGINE.init();
             ENGINE.start();
             this.ENGINE_MAP.put(NAME, ENGINE);
+        } else {
+            this.ENGINE_MAP.get(NAME).start();
         }
     }
     @Override
