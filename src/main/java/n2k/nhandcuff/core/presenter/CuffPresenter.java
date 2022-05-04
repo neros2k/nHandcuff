@@ -23,7 +23,7 @@ public class CuffPresenter extends APresenter implements Listener {
         Bukkit.getServer().getPluginManager().registerEvents(this, super.getInteractor().getPlugin());
     }
     @EventHandler
-    public void onPlayerInteract(@NotNull PlayerInteractAtEntityEvent EVENT) {
+    public void onPlayerCuff(@NotNull PlayerInteractAtEntityEvent EVENT) {
         Player HOLDER = EVENT.getPlayer();
         String HOLDER_NAME = HOLDER.getName();
         if(!EVENT.isCancelled() && !this.COOLDOWN.contains(HOLDER_NAME)) {

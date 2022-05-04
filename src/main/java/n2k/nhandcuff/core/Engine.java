@@ -79,6 +79,9 @@ public class Engine implements IEngine {
                 Vector VECTOR = HOLDER_LOCATION.toVector().subtract(LOCATION.toVector()).multiply(MULTIPLY);
                 this.PLAYER.setVelocity(VECTOR);
             }
+            if(!this.BAT.isLeashed()) {
+                this.getInteractor().uncuffPlayer(this.PLAYER, HOLDER);
+            }
         }
         this.PLAYER.addPotionEffect(
                 new PotionEffect(PotionEffectType.SLOW, 20, 2)

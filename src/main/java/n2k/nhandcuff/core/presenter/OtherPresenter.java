@@ -4,6 +4,8 @@ import n2k.nhandcuff.base.IInteractor;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
@@ -22,5 +24,15 @@ public class OtherPresenter extends APresenter implements Listener {
     @EventHandler
     public void onPlayerQuit(@NotNull PlayerQuitEvent EVENT) {
         this.getInteractor().unloadEngine(EVENT.getPlayer().getName());
+    }
+    @EventHandler
+    public void onPlayerDeath(@NotNull PlayerDeathEvent EVENT) {
+        this.getInteractor().reloadEngine(EVENT.getEntity());
+    }
+    @EventHandler
+    public void onPlayerInteract(@NotNull PlayerInteractEvent EVENT) {
+        if(this.getInteractor().getEngine(EVENT.getPlayer().getName()).getState().isCuffed()) {
+            EVENT.setCancelled(true);
+        }
     }
 }

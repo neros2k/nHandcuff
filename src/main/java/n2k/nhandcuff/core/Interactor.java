@@ -44,6 +44,11 @@ public class Interactor implements IInteractor {
         }
     }
     @Override
+    public void reloadEngine(@NotNull Player PLAYER) {
+        this.unloadEngine(PLAYER.getName());
+        this.loadEngine(PLAYER);
+    }
+    @Override
     public void cuffPlayer(@NotNull Player PLAYER, Player HOLDER) {
         String NAME = PLAYER.getName();
         Bat BAT = this.getEngine(PLAYER.getName()).getBat();
