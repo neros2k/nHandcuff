@@ -2,6 +2,7 @@ package n2k.nhandcuff.base;
 import n2k.nhandcuff.base.object.State;
 import org.bukkit.entity.Bat;
 import org.bukkit.entity.Player;
+import java.util.ArrayList;
 public interface IEngine extends IInitializable {
     void start();
     void stop();
@@ -13,4 +14,5 @@ public interface IEngine extends IInitializable {
     IInteractor getInteractor();
     State getState();
     Bat getBat();
+    ArrayList<String> getLeashed();
 }

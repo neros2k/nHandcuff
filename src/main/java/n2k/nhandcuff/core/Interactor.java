@@ -56,15 +56,17 @@ public class Interactor implements IInteractor {
         BAT.setLeashHolder(HOLDER);
         ENGINE.getState().setHolder(HOLDER.getName());
         ENGINE.cuff();
+        this.getEngine(HOLDER.getName()).getLeashed().add(NAME);
     }
     @Override
-    public void uncuffPlayer(@NotNull Player PLAYER, Player HOLDER) {
+    public void uncuffPlayer(@NotNull Player PLAYER, @NotNull Player HOLDER) {
         String NAME = PLAYER.getName();
         Bat BAT = this.getEngine(PLAYER.getName()).getBat();
         IEngine ENGINE = this.getEngine(NAME);
         BAT.setLeashHolder(null);
         ENGINE.uncuff();
         ENGINE.getState().setHolder("");
+        this.getEngine(HOLDER.getName()).getLeashed().remove(NAME);
     }
     @Override
     public IEngine getEngine(String NAME) {

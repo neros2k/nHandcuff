@@ -14,8 +14,10 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+import java.util.ArrayList;
 import java.util.Objects;
 public class Engine implements IEngine {
+    private final ArrayList<String> LEASHED;
     private final IInteractor INTERACTOR;
     private final Player PLAYER;
     private final State STATE;
@@ -23,6 +25,7 @@ public class Engine implements IEngine {
     private Integer CUFF_TICK_ID;
     private Bat BAT;
     public Engine(IInteractor INTERACTOR, @NotNull Player PLAYER, Boolean CUFFED) {
+        this.LEASHED = new ArrayList<>();
         this.INTERACTOR = INTERACTOR;
         this.PLAYER = PLAYER;
         this.STATE = new State(CUFFED);
@@ -46,8 +49,7 @@ public class Engine implements IEngine {
         Bukkit.getScheduler().cancelTask(this.BAT_TICK_ID);
         this.BAT.remove();
         if(this.STATE.isCuffed()) {
-            Location LOCATION = this.PLAYER.getLocation();
-            Objects.requireNonNull(LOCATION.getWorld()).dropItem(LOCATION, new ItemStack(Material.LEAD));
+            this.drop();
             this.uncuff();
         }
     }
@@ -79,8 +81,9 @@ public class Engine implements IEngine {
                 Vector VECTOR = HOLDER_LOCATION.toVector().subtract(LOCATION.toVector()).multiply(MULTIPLY);
                 this.PLAYER.setVelocity(VECTOR);
             }
-            if(!this.BAT.isLeashed()) {
+            if(!(this.BAT.getLeashHolder() instanceof Player)) {
                 this.getInteractor().uncuffPlayer(this.PLAYER, HOLDER);
+                this.drop();
             }
         }
         this.PLAYER.addPotionEffect(
@@ -102,5 +105,13 @@ public class Engine implements IEngine {
     @Override
     public Bat getBat() {
         return this.BAT;
+    }
+    @Override
+    public ArrayList<String> getLeashed() {
+        return this.LEASHED;
+    }
+    private void drop() {
+        Location LOCATION = this.PLAYER.getLocation();
+        Objects.requireNonNull(LOCATION.getWorld()).dropItem(LOCATION, new ItemStack(Material.LEAD));
     }
 }
