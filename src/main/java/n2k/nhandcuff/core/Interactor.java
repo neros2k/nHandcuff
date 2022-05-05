@@ -2,15 +2,15 @@ package n2k.nhandcuff.core;
 import n2k.nhandcuff.base.APresenter;
 import n2k.nhandcuff.base.IEngine;
 import n2k.nhandcuff.base.IInteractor;
+import n2k.nhandcuff.base.model.ConfigModel;
 import n2k.nhandcuff.core.presenter.CuffPresenter;
 import n2k.nhandcuff.core.presenter.OtherPresenter;
+import n2k.nhandcuff.nHandCuff;
 import org.bukkit.Sound;
 import org.bukkit.entity.Bat;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,6 +88,10 @@ public class Interactor implements IInteractor {
     @Override
     public Map<String, IEngine> getEngineMap() {
         return this.ENGINE_MAP;
+    }
+    @Override
+    public ConfigModel getModel() {
+        return ((nHandCuff) this.getPlugin()).getJsonConfig().getJson();
     }
     private void playSound(@NotNull List<Player> PLAYERS, Sound SOUND) {
         PLAYERS.forEach(PLAYER -> PLAYER.playSound(PLAYER.getLocation(), SOUND, 0.5F, 1));
