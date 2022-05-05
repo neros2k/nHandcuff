@@ -4,11 +4,15 @@ import n2k.nhandcuff.base.IEngine;
 import n2k.nhandcuff.base.IInteractor;
 import n2k.nhandcuff.core.presenter.CuffPresenter;
 import n2k.nhandcuff.core.presenter.OtherPresenter;
+import org.bukkit.Sound;
 import org.bukkit.entity.Bat;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 public class Interactor implements IInteractor {
     private final APresenter CUFF_PRESENTER;
@@ -57,6 +61,7 @@ public class Interactor implements IInteractor {
         ENGINE.getState().setHolder(HOLDER.getName());
         ENGINE.cuff();
         this.getEngine(HOLDER.getName()).getLeashed().add(NAME);
+        this.playSound(List.of(PLAYER, HOLDER), Sound.ITEM_ARMOR_EQUIP_LEATHER);
     }
     @Override
     public void uncuffPlayer(@NotNull Player PLAYER, @NotNull Player HOLDER) {
@@ -67,6 +72,7 @@ public class Interactor implements IInteractor {
         ENGINE.uncuff();
         ENGINE.getState().setHolder("");
         this.getEngine(HOLDER.getName()).getLeashed().remove(NAME);
+        this.playSound(List.of(PLAYER, HOLDER), Sound.ITEM_ARMOR_EQUIP_LEATHER);
     }
     @Override
     public IEngine getEngine(String NAME) {
@@ -82,5 +88,8 @@ public class Interactor implements IInteractor {
     @Override
     public Map<String, IEngine> getEngineMap() {
         return this.ENGINE_MAP;
+    }
+    private void playSound(@NotNull List<Player> PLAYERS, Sound SOUND) {
+        PLAYERS.forEach(PLAYER -> PLAYER.playSound(PLAYER.getLocation(), SOUND, 0.5F, 1));
     }
 }

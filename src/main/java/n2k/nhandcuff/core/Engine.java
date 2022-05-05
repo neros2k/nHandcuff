@@ -78,6 +78,7 @@ public class Engine implements IEngine {
             double DISTANCE = LOCATION.distanceSquared(HOLDER_LOCATION);
             if(DISTANCE > 12) {
                 double MULTIPLY = DISTANCE/120;
+                if(MULTIPLY > 0.5) MULTIPLY = 0.5;
                 Vector VECTOR = HOLDER_LOCATION.toVector().subtract(LOCATION.toVector()).multiply(MULTIPLY);
                 this.PLAYER.setVelocity(VECTOR);
             }
