@@ -3,5 +3,15 @@ version: '${project.version}'
 main: n2k.nhandcuff.nHandCuff
 api-version: 1.17
 authors: [ n2k ]
+commands:
+  handcuff:
+    description: The main command.
+permissions:
+  nhandcuff.*:
+    children:
+      - nhandcuff.bypass
+      - nhandcuff.cuff
+      - nhandcuff.uncuff
+      - nhandcuff.reload
 softdepend:
   - JSONConfigAPI

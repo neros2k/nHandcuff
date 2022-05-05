@@ -1,10 +1,12 @@
 {
+  "RELOAD_COMMAND": "§a▪§f Конфигурация плагина успешно перезагружена.",
   "CUFF_MESSAGE": "§6▪§f На вас надели наручники.",
   "PLAYER_CUFF_MESSAGE": "§6▪§f Вы надели наручники на игрока {player}.",
   "CUFF_SOUND": "ITEM_ARMOR_EQUIP_LEATHER",
   "UNCUFF_SOUND": "ITEM_ARMOR_EQUIP_LEATHER",
   "BAT_TICK": 1,
   "CUFF_TICK": 1,
+  "COMMAND_DISTANCE": 6,
   "VELOCITY_DISTANCE": 12,
   "BREAK_DISTANCE": 30,
   "DISTANCE_MULTIPLIER": 140,
