@@ -32,10 +32,12 @@ public class CuffPresenter extends APresenter implements Listener {
                 if(HOLDER.hasPermission("nhandcuff.use") && !PLAYER.hasPermission("nhandcuff.bypass")) {
                     IEngine ENGINE = INTERACTOR.getEngine(PLAYER.getName());
                     Material MATERIAL = HOLDER.getInventory().getItemInMainHand().getType();
-                    if(ENGINE.getState().isCuffed() && ENGINE.getState().getHolder().equals(HOLDER_NAME)) {
-                        INTERACTOR.uncuffPlayer(PLAYER, HOLDER);
-                        if(HOLDER.getGameMode() != GameMode.CREATIVE) {
-                            HOLDER.getInventory().addItem(new ItemStack(Material.LEAD));
+                    if(ENGINE.getState().isCuffed()) {
+                        if(ENGINE.getState().getHolder().equals(HOLDER_NAME)) {
+                            INTERACTOR.uncuffPlayer(PLAYER, HOLDER);
+                            if(HOLDER.getGameMode() != GameMode.CREATIVE) {
+                                HOLDER.getInventory().addItem(new ItemStack(Material.LEAD));
+                            }
                         }
                     } else if(MATERIAL == Material.LEAD) {
                         INTERACTOR.cuffPlayer(PLAYER, HOLDER);
