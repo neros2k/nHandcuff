@@ -20,8 +20,9 @@ public final class nHandCuff extends JavaPlugin {
         if(Bukkit.getPluginManager().isPluginEnabled("JSONConfigAPI")) {
             Optional<JSONConfig<ConfigModel>> JSON_CONFIG_OPT = JCApi.getNew(this, ConfigModel.class, "config.json");
             JSON_CONFIG_OPT.ifPresent(CONFIG -> {
-                this.INTERACTOR.init();
                 this.JSON_CONFIG = CONFIG;
+                CONFIG.reload();
+                this.INTERACTOR.init();
             });
         }
     }
