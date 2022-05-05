@@ -63,7 +63,7 @@ public class Interactor implements IInteractor {
         this.getEngine(HOLDER.getName()).getLeashed().add(NAME);
         this.playSound(List.of(PLAYER, HOLDER), Sound.valueOf(this.getModel().CUFF_SOUND));
         PLAYER.sendMessage(this.getModel().CUFF_MESSAGE);
-        HOLDER.sendMessage(this.getModel().PLAYER_CUFF_MESSAGE);
+        HOLDER.sendMessage(this.getModel().PLAYER_CUFF_MESSAGE.replace("{player}", NAME));
     }
     @Override
     public void uncuffPlayer(@NotNull Player PLAYER, @NotNull Player HOLDER) {
