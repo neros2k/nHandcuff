@@ -36,6 +36,7 @@ public class CommandPresenter extends APresenter implements CommandExecutor {
         if(ARGS[0].equals("reload")) {
             ((nHandCuff) INTERACTOR.getPlugin()).getJsonConfig().reload();
             SENDER.sendMessage(MODEL.RELOAD_COMMAND);
+            return true;
         }
         if(ARGS.length > 1) {
             Player PLAYER = Bukkit.getPlayer(ARGS[1]);
