@@ -61,7 +61,9 @@ public class Interactor implements IInteractor {
         ENGINE.getState().setHolder(HOLDER.getName());
         ENGINE.cuff();
         this.getEngine(HOLDER.getName()).getLeashed().add(NAME);
-        this.playSound(List.of(PLAYER, HOLDER), Sound.ITEM_ARMOR_EQUIP_LEATHER);
+        this.playSound(List.of(PLAYER, HOLDER), Sound.valueOf(this.getModel().CUFF_SOUND));
+        PLAYER.sendMessage(this.getModel().CUFF_MESSAGE);
+        HOLDER.sendMessage(this.getModel().PLAYER_CUFF_MESSAGE);
     }
     @Override
     public void uncuffPlayer(@NotNull Player PLAYER, @NotNull Player HOLDER) {
@@ -72,7 +74,7 @@ public class Interactor implements IInteractor {
         ENGINE.uncuff();
         ENGINE.getState().setHolder("");
         this.getEngine(HOLDER.getName()).getLeashed().remove(NAME);
-        this.playSound(List.of(PLAYER, HOLDER), Sound.ITEM_ARMOR_EQUIP_LEATHER);
+        this.playSound(List.of(PLAYER, HOLDER), Sound.valueOf(this.getModel().UNCUFF_SOUND));
     }
     @Override
     public IEngine getEngine(String NAME) {

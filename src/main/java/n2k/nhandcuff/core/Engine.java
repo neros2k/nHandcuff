@@ -1,6 +1,7 @@
 package n2k.nhandcuff.core;
 import n2k.nhandcuff.base.IEngine;
 import n2k.nhandcuff.base.IInteractor;
+import n2k.nhandcuff.base.model.ConfigModel;
 import n2k.nhandcuff.base.object.State;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -41,7 +42,7 @@ public class Engine implements IEngine {
         this.BAT.setCollidable(false);
         BukkitScheduler SCHEDULER = Bukkit.getScheduler();
         this.BAT_TICK_ID = SCHEDULER.runTaskTimer(
-                this.INTERACTOR.getPlugin(), this::batTick, 0L, 1L)
+                this.INTERACTOR.getPlugin(), this::batTick, 0L, this.getInteractor().getModel().BAT_TICK)
                 .getTaskId();
     }
     @Override
@@ -56,7 +57,7 @@ public class Engine implements IEngine {
     @Override
     public void cuff() {
         this.CUFF_TICK_ID = Bukkit.getScheduler().runTaskTimer(
-                this.INTERACTOR.getPlugin(), this::cuffTick, 0L, 1L)
+                this.INTERACTOR.getPlugin(), this::cuffTick, 0L, this.getInteractor().getModel().CUFF_TICK)
                 .getTaskId();
         this.STATE.setCuffed(true);
     }
@@ -72,23 +73,24 @@ public class Engine implements IEngine {
     @Override
     public void cuffTick() {
         Player HOLDER = Bukkit.getPlayer(this.STATE.getHolder());
+        ConfigModel MODEL = this.INTERACTOR.getModel();
         if(HOLDER != null) {
             Location LOCATION = this.PLAYER.getLocation();
             Location HOLDER_LOCATION = HOLDER.getLocation();
             double DISTANCE = LOCATION.distanceSquared(HOLDER_LOCATION);
-            if(DISTANCE > 12) {
-                double MULTIPLY = DISTANCE/120;
-                if(MULTIPLY > 0.5) MULTIPLY = 0.5;
+            if(DISTANCE > MODEL.VELOCITY_DISTANCE) {
+                double MULTIPLY = DISTANCE/MODEL.DISTANCE_MULTIPLIER;
+                if(MULTIPLY > MODEL.MAX_MULTIPLY) MULTIPLY = MODEL.MAX_MULTIPLY;
                 Vector VECTOR = HOLDER_LOCATION.toVector().subtract(LOCATION.toVector()).multiply(MULTIPLY);
                 this.PLAYER.setVelocity(VECTOR);
             }
-            if(DISTANCE > 30 || !(this.BAT.getLeashHolder() instanceof Player)) {
+            if(DISTANCE > MODEL.BREAK_DISTANCE || !(this.BAT.getLeashHolder() instanceof Player)) {
                 this.getInteractor().uncuffPlayer(this.PLAYER, HOLDER);
                 this.drop();
             }
         }
         this.PLAYER.addPotionEffect(
-                new PotionEffect(PotionEffectType.SLOW, 20, 2)
+                new PotionEffect(PotionEffectType.SLOW, 20, MODEL.SLOW_AMPLIFIER_LOAD)
         );
     }
     @Override

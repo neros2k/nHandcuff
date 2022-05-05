@@ -38,7 +38,8 @@ public class OtherPresenter extends APresenter implements Listener {
     }
     @EventHandler
     public void onPlayerInteract(@NotNull PlayerInteractEvent EVENT) {
-        if(this.getInteractor().getEngine(EVENT.getPlayer().getName()).getState().isCuffed()) {
+        if(this.getInteractor().getEngine(EVENT.getPlayer().getName()).getState().isCuffed() &&
+           this.getInteractor().getModel().FORBID_INTERACT) {
             EVENT.setCancelled(true);
         }
     }

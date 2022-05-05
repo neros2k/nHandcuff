@@ -44,7 +44,8 @@ public class CuffPresenter extends APresenter implements Listener {
                     }
                 }
                 this.COOLDOWN.add(HOLDER_NAME);
-                Bukkit.getScheduler().runTaskLater(INTERACTOR.getPlugin(), () -> COOLDOWN.remove(HOLDER_NAME), 2L);
+                Bukkit.getScheduler().runTaskLater(INTERACTOR.getPlugin(),
+                        () -> COOLDOWN.remove(HOLDER_NAME), INTERACTOR.getModel().INTERACT_COOLDOWN);
             }
         }
     }
