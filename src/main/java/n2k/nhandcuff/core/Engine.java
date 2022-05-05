@@ -37,9 +37,12 @@ public class Engine implements IEngine {
     }
     @Override
     public void start() {
-        this.BAT = (Bat) PLAYER.getWorld().spawnEntity(PLAYER.getLocation(), EntityType.BAT);
+        this.BAT = (Bat) PLAYER.getWorld().spawnEntity(PLAYER.getLocation().add(0.0, 1.0, 0.0), EntityType.BAT);
         this.BAT.setAI(false);
         this.BAT.setCollidable(false);
+        this.BAT.setInvisible(true);
+        this.BAT.setSilent(true);
+        this.BAT.setInvulnerable(true);
         BukkitScheduler SCHEDULER = Bukkit.getScheduler();
         this.BAT_TICK_ID = SCHEDULER.runTaskTimer(
                 this.INTERACTOR.getPlugin(), this::batTick, 0L, this.getInteractor().getModel().BAT_TICK)
@@ -68,6 +71,7 @@ public class Engine implements IEngine {
     }
     @Override
     public void batTick() {
+        this.BAT.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20, 6));
         this.BAT.teleport(this.PLAYER.getLocation());
     }
     @Override
@@ -87,6 +91,9 @@ public class Engine implements IEngine {
             if(DISTANCE > MODEL.BREAK_DISTANCE || !(this.BAT.getLeashHolder() instanceof Player)) {
                 this.getInteractor().uncuffPlayer(this.PLAYER, HOLDER);
                 this.drop();
+            }
+            if(DISTANCE > MODEL.TELEPORT_DISTANCE) {
+                this.PLAYER.teleport(HOLDER_LOCATION);
             }
         }
         this.PLAYER.addPotionEffect(

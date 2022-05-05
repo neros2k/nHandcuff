@@ -1,4 +1,6 @@
 {
+  "PERM_ERROR": "§c▪§f Недостаточно прав.",
+  "UNKNOWN_ERROR": "§c▪§f Неизвестная команда/некорректное использование.",
   "RELOAD_COMMAND": "§a▪§f Конфигурация плагина успешно перезагружена.",
   "CUFF_MESSAGE": "§6▪§f На вас надели наручники.",
   "PLAYER_CUFF_MESSAGE": "§6▪§f Вы надели наручники на игрока {player}.",
@@ -6,12 +8,13 @@
   "UNCUFF_SOUND": "ITEM_ARMOR_EQUIP_LEATHER",
   "BAT_TICK": 1,
   "CUFF_TICK": 1,
-  "COMMAND_DISTANCE": 6,
   "VELOCITY_DISTANCE": 12,
-  "BREAK_DISTANCE": 30,
+  "BREAK_DISTANCE": 40,
+  "TELEPORT_DISTANCE": 80,
   "DISTANCE_MULTIPLIER": 140,
   "MAX_MULTIPLY": 0.5,
   "SLOW_AMPLIFIER_LOAD": 2,
   "INTERACT_COOLDOWN": 2,
-  "FORBID_INTERACT": true
+  "FORBID_INTERACT": true,
+  "CONSOLE_LOG": true
 }

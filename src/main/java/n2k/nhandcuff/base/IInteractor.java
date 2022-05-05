@@ -6,7 +6,6 @@ import java.util.Map;
 public interface IInteractor extends IInitializable {
     void loadEngine(Player PLAYER);
     void unloadEngine(String NAME);
-    void reloadEngine(Player PLAYER);
     void cuffPlayer(Player PLAYER, Player HOLDER);
     void uncuffPlayer(Player PLAYER, Player HOLDER);
     IEngine getEngine(String NAME);

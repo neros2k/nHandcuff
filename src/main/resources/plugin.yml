@@ -9,9 +9,8 @@ commands:
 permissions:
   nhandcuff.*:
     children:
+      - nhandcuff.use
+      - nhandcuff.admin
       - nhandcuff.bypass
-      - nhandcuff.cuff
-      - nhandcuff.uncuff
-      - nhandcuff.reload
 softdepend:
   - JSONConfigAPI

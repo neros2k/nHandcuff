@@ -1,5 +1,6 @@
 package n2k.nhandcuff.core.presenter;
 import n2k.nhandcuff.base.APresenter;
+import n2k.nhandcuff.base.IEngine;
 import n2k.nhandcuff.base.IInteractor;
 import n2k.nhandcuff.base.model.ConfigModel;
 import n2k.nhandcuff.nHandCuff;
@@ -24,25 +25,36 @@ public class CommandPresenter extends APresenter implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender SENDER, @NotNull Command COMMAND, @NotNull String STR, @NotNull String @NotNull [] ARGS) {
         ConfigModel MODEL = this.getInteractor().getModel();
         IInteractor INTERACTOR = super.getInteractor();
-        if(!(ARGS.length >= 1)) return false;
-        if(ARGS[0].equals("reload") && SENDER.hasPermission("nhandcuff.reload")) {
+        if(ARGS.length == 0) {
+            SENDER.sendMessage(MODEL.UNKNOWN_ERROR);
+            return false;
+        }
+        if(!SENDER.hasPermission("nhandcuff.admin")) {
+            SENDER.sendMessage(MODEL.PERM_ERROR);
+            return false;
+        }
+        if(ARGS[0].equals("reload")) {
             ((nHandCuff) INTERACTOR.getPlugin()).getJsonConfig().reload();
             SENDER.sendMessage(MODEL.RELOAD_COMMAND);
         }
         if(ARGS.length > 1) {
-            Player HOLDER = Bukkit.getPlayer(ARGS[1]);
-            if(HOLDER != null && SENDER instanceof Player PLAYER) {
-                double DISTANCE = HOLDER.getLocation().distance(PLAYER.getLocation());
-                if(DISTANCE > MODEL.COMMAND_DISTANCE && !PLAYER.hasPermission("nhandcuff.bypass")) {
-                    if(ARGS[0].equals("cuff") && SENDER.hasPermission("nhandcuff.cuff")) {
-                        INTERACTOR.cuffPlayer(PLAYER, HOLDER);
-                    }
-                    if(ARGS[0].equals("uncuff") && SENDER.hasPermission("nhandcuff.cuff")) {
-                        INTERACTOR.uncuffPlayer(PLAYER, HOLDER);
-                    }
+            Player PLAYER = Bukkit.getPlayer(ARGS[1]);
+            if(PLAYER != null) {
+                IEngine ENGINE = INTERACTOR.getEngine(ARGS[1]);
+                if(ARGS[0].equals("list")) {
+                    StringBuilder BUILDER = new StringBuilder();
+                    ENGINE.getLeashed().forEach(LEASHED -> BUILDER.append(LEASHED).append(" ; "));
+                    SENDER.sendMessage(BUILDER.toString());
                 }
+                if(ARGS[0].equals("clear")) {
+                    ENGINE.getLeashed().forEach(LEASHED -> INTERACTOR.uncuffPlayer(
+                            Bukkit.getPlayer(LEASHED), PLAYER
+                    ));
+                }
+                return true;
             }
         }
+        SENDER.sendMessage(MODEL.UNKNOWN_ERROR);
         return false;
     }
 }

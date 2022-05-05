@@ -52,11 +52,6 @@ public class Interactor implements IInteractor {
         }
     }
     @Override
-    public void reloadEngine(@NotNull Player PLAYER) {
-        this.unloadEngine(PLAYER.getName());
-        this.loadEngine(PLAYER);
-    }
-    @Override
     public void cuffPlayer(@NotNull Player PLAYER, Player HOLDER) {
         String NAME = PLAYER.getName();
         Bat BAT = this.getEngine(PLAYER.getName()).getBat();
@@ -68,6 +63,9 @@ public class Interactor implements IInteractor {
         this.playSound(List.of(PLAYER, HOLDER), Sound.valueOf(this.getModel().CUFF_SOUND));
         PLAYER.sendMessage(this.getModel().CUFF_MESSAGE);
         HOLDER.sendMessage(this.getModel().PLAYER_CUFF_MESSAGE.replace("{player}", NAME));
+        if(this.getModel().CONSOLE_LOG) {
+            this.getPlugin().getLogger().info(NAME + " cuffed | Ex holder: " + HOLDER.getName());
+        }
     }
     @Override
     public void uncuffPlayer(@NotNull Player PLAYER, @NotNull Player HOLDER) {
@@ -79,6 +77,9 @@ public class Interactor implements IInteractor {
         ENGINE.getState().setHolder("");
         this.getEngine(HOLDER.getName()).getLeashed().remove(NAME);
         this.playSound(List.of(PLAYER, HOLDER), Sound.valueOf(this.getModel().UNCUFF_SOUND));
+        if(this.getModel().CONSOLE_LOG) {
+            this.getPlugin().getLogger().info(NAME + " uncuffed | Holder: " + HOLDER.getName());
+        }
     }
     @Override
     public IEngine getEngine(String NAME) {

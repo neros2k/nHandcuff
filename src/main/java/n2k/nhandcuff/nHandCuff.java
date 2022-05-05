@@ -29,9 +29,7 @@ public final class nHandCuff extends JavaPlugin {
     @Override
     public void onDisable() {
         if(this.INTERACTOR != null) {
-            Bukkit.getScheduler().runTaskLater(this, () -> {
-                this.INTERACTOR.getEngineMap().forEach((String NAME, IEngine ENGINE) -> this.INTERACTOR.unloadEngine(NAME));
-            }, 20L);
+            this.INTERACTOR.getEngineMap().forEach((String NAME, IEngine ENGINE) -> ENGINE.stop());
         }
     }
     public JSONConfig<ConfigModel> getJsonConfig() {
