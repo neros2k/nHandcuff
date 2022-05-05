@@ -57,6 +57,12 @@ public class Engine implements IEngine {
             this.drop();
             this.uncuff();
         }
+        this.LEASHED.forEach(LEASHED -> {
+            Player PLAYER = Bukkit.getPlayer(LEASHED);
+            if(PLAYER != null) {
+                this.getInteractor().uncuffPlayer(PLAYER, this.PLAYER);
+            }
+        });
     }
     @Override
     public void cuff() {

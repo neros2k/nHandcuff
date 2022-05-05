@@ -64,7 +64,7 @@ public class Interactor implements IInteractor {
         PLAYER.sendMessage(this.getModel().CUFF_MESSAGE);
         HOLDER.sendMessage(this.getModel().PLAYER_CUFF_MESSAGE.replace("{player}", NAME));
         if(this.getModel().CONSOLE_LOG) {
-            this.getPlugin().getLogger().info(NAME + " cuffed | Ex holder: " + HOLDER.getName());
+            this.getPlugin().getLogger().info(NAME + " cuffed | Holder: " + HOLDER.getName());
         }
     }
     @Override
@@ -78,7 +78,7 @@ public class Interactor implements IInteractor {
         this.getEngine(HOLDER.getName()).getLeashed().remove(NAME);
         this.playSound(List.of(PLAYER, HOLDER), Sound.valueOf(this.getModel().UNCUFF_SOUND));
         if(this.getModel().CONSOLE_LOG) {
-            this.getPlugin().getLogger().info(NAME + " uncuffed | Holder: " + HOLDER.getName());
+            this.getPlugin().getLogger().info(NAME + " uncuffed | Ex holder: " + HOLDER.getName());
         }
     }
     @Override
