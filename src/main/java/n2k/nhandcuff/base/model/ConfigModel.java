@@ -14,6 +14,7 @@ public class ConfigModel {
     public Integer TELEPORT_DISTANCE;
     public Integer DISTANCE_MULTIPLIER;
     public Double MAX_MULTIPLY;
+    public Double Y_SPAWN_ADD;
     public Integer SLOW_AMPLIFIER_LOAD;
     public Integer INTERACT_COOLDOWN;
     public Boolean FORBID_INTERACT;

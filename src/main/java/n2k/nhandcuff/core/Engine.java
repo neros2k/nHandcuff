@@ -37,7 +37,8 @@ public class Engine implements IEngine {
     }
     @Override
     public void start() {
-        this.BAT = (Bat) PLAYER.getWorld().spawnEntity(PLAYER.getLocation().add(0.0, 1.0, 0.0), EntityType.BAT);
+        this.BAT = (Bat) PLAYER.getWorld().spawnEntity(
+                PLAYER.getLocation().add(0.0, this.getInteractor().getModel().Y_SPAWN_ADD, 0.0), EntityType.BAT);
         this.BAT.setAI(false);
         this.BAT.setCollidable(false);
         this.BAT.setInvisible(true);
