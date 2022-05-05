@@ -57,12 +57,6 @@ public class Engine implements IEngine {
             this.drop();
             this.uncuff();
         }
-        this.LEASHED.forEach(LEASHED -> {
-            Player PLAYER = Bukkit.getPlayer(LEASHED);
-            if(PLAYER != null) {
-                this.getInteractor().uncuffPlayer(PLAYER, this.PLAYER);
-            }
-        });
     }
     @Override
     public void cuff() {
@@ -88,6 +82,18 @@ public class Engine implements IEngine {
         if(HOLDER != null) {
             Location LOCATION = this.PLAYER.getLocation();
             Location HOLDER_LOCATION = HOLDER.getLocation();
+            if(HOLDER.isDead() || !this.getInteractor().getEngineMap().containsKey(HOLDER.getName())) {
+                BAT.setLeashHolder(null);
+                this.uncuff();
+                this.getState().setHolder("");
+                this.drop();
+                return;
+            }
+            if(HOLDER.getWorld() != this.PLAYER.getWorld()) {
+                this.PLAYER.teleport(HOLDER_LOCATION);
+                this.BAT.setLeashHolder(HOLDER);
+                return;
+            }
             double DISTANCE = LOCATION.distanceSquared(HOLDER_LOCATION);
             if(DISTANCE > MODEL.VELOCITY_DISTANCE) {
                 double MULTIPLY = DISTANCE/MODEL.DISTANCE_MULTIPLIER;
@@ -95,17 +101,22 @@ public class Engine implements IEngine {
                 Vector VECTOR = HOLDER_LOCATION.toVector().subtract(LOCATION.toVector()).multiply(MULTIPLY);
                 this.PLAYER.setVelocity(VECTOR);
             }
-            if(DISTANCE > MODEL.BREAK_DISTANCE || !(this.BAT.getLeashHolder() instanceof Player)) {
-                this.getInteractor().uncuffPlayer(this.PLAYER, HOLDER);
-                this.drop();
-            }
             if(DISTANCE > MODEL.TELEPORT_DISTANCE) {
                 this.PLAYER.teleport(HOLDER_LOCATION);
+            } else if(DISTANCE > MODEL.BREAK_DISTANCE ||
+                     (this.BAT.isLeashed() && !(this.BAT.getLeashHolder() instanceof Player))) {
+                this.getInteractor().uncuffPlayer(this.PLAYER, HOLDER);
+                this.drop();
             }
         }
         this.PLAYER.addPotionEffect(
                 new PotionEffect(PotionEffectType.SLOW, 20, MODEL.SLOW_AMPLIFIER_LOAD)
         );
+    }
+    @Override
+    public void drop() {
+        Location LOCATION = this.PLAYER.getLocation();
+        Objects.requireNonNull(LOCATION.getWorld()).dropItem(LOCATION, new ItemStack(Material.LEAD));
     }
     @Override
     public Player getPlayer() {
@@ -126,9 +137,5 @@ public class Engine implements IEngine {
     @Override
     public ArrayList<String> getLeashed() {
         return this.LEASHED;
-    }
-    private void drop() {
-        Location LOCATION = this.PLAYER.getLocation();
-        Objects.requireNonNull(LOCATION.getWorld()).dropItem(LOCATION, new ItemStack(Material.LEAD));
     }
 }

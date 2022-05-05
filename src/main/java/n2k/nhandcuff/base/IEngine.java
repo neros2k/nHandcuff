@@ -10,6 +10,7 @@ public interface IEngine extends IInitializable {
     void uncuff();
     void batTick();
     void cuffTick();
+    void drop();
     Player getPlayer();
     IInteractor getInteractor();
     State getState();

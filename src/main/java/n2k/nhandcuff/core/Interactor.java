@@ -7,6 +7,7 @@ import n2k.nhandcuff.core.presenter.CommandPresenter;
 import n2k.nhandcuff.core.presenter.CuffPresenter;
 import n2k.nhandcuff.core.presenter.OtherPresenter;
 import n2k.nhandcuff.nHandCuff;
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Bat;
 import org.bukkit.entity.Player;
@@ -47,7 +48,8 @@ public class Interactor implements IInteractor {
     @Override
     public void unloadEngine(String NAME) {
         if(this.ENGINE_MAP.containsKey(NAME)) {
-            this.ENGINE_MAP.get(NAME).stop();
+            IEngine ENGINE = this.ENGINE_MAP.get(NAME);
+            ENGINE.stop();
             this.ENGINE_MAP.remove(NAME);
         }
     }
