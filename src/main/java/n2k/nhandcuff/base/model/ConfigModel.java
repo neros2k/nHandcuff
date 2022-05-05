@@ -9,7 +9,7 @@ public class ConfigModel {
     public Integer VELOCITY_DISTANCE;
     public Integer BREAK_DISTANCE;
     public Integer DISTANCE_MULTIPLIER;
-    public Integer MAX_MULTIPLY;
+    public Double MAX_MULTIPLY;
     public Integer SLOW_AMPLIFIER_LOAD;
     public Integer INTERACT_COOLDOWN;
     public Boolean FORBID_INTERACT;
