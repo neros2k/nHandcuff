@@ -76,12 +76,12 @@ public class Engine implements IEngine {
             Location LOCATION = this.PLAYER.getLocation();
             Location HOLDER_LOCATION = HOLDER.getLocation();
             double DISTANCE = LOCATION.distanceSquared(HOLDER_LOCATION);
-            if(DISTANCE > 7) {
+            if(DISTANCE > 12) {
                 double MULTIPLY = DISTANCE/120;
                 Vector VECTOR = HOLDER_LOCATION.toVector().subtract(LOCATION.toVector()).multiply(MULTIPLY);
                 this.PLAYER.setVelocity(VECTOR);
             }
-            if(!(this.BAT.getLeashHolder() instanceof Player)) {
+            if(DISTANCE > 30 || !(this.BAT.getLeashHolder() instanceof Player)) {
                 this.getInteractor().uncuffPlayer(this.PLAYER, HOLDER);
                 this.drop();
             }

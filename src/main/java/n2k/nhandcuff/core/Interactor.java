@@ -79,4 +79,8 @@ public class Interactor implements IInteractor {
     public JavaPlugin getPlugin() {
         return this.PLUGIN;
     }
+    @Override
+    public Map<String, IEngine> getEngineMap() {
+        return this.ENGINE_MAP;
+    }
 }
