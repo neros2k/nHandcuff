@@ -20,20 +20,17 @@ public final class nHandCuff extends JavaPlugin {
         if(Bukkit.getPluginManager().isPluginEnabled("JSONConfigAPI")) {
             Optional<JSONConfig<ConfigModel>> JSON_CONFIG_OPT = JCApi.getNew(this, ConfigModel.class, "config.json");
             JSON_CONFIG_OPT.ifPresent(CONFIG -> {
-                this.JSON_CONFIG = CONFIG;
-                CONFIG.reload();
-
-                //О́тче наш, И́же еси́ на небесе́х!
-                //Да святи́тся имя Твое́,
-                //да прии́дет Ца́рствие Твое́,
-                //да бу́дет во́ля Твоя,
-                //я́ко на небеси́ и на земли́.
-                //Хлеб наш насу́щный даждь нам днесь;
-                //И оста́ви нам до́лги наша,
-                //Якоже и мы оставля́ем должнико́м нашим;
-                //И не введи́ нас во искуше́ние,
-                //Но изба́ви нас от лука́ваго.
-
+                this.JSON_CONFIG = CONFIG.reload();
+                // О́тче наш, И́же еси́ на небесе́х!
+                // Да святи́тся имя Твое́,
+                // Да прии́дет Ца́рствие Твое́,
+                // Да бу́дет во́ля Твоя,
+                // Я́ко на небеси́ и на земли́.
+                // Хлеб наш насу́щный даждь нам днесь;
+                // И оста́ви нам до́лги наша,
+                // Якоже и мы оставля́ем должнико́м нашим;
+                // И не введи́ нас во искуше́ние,
+                // Но изба́ви нас от лука́ваго.
                 this.INTERACTOR.init();
             });
         }

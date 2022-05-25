@@ -90,11 +90,8 @@ public class Interactor implements IInteractor {
     @Override
     public void uncuffPlayer(@NotNull Player PLAYER, @NotNull Player HOLDER) {
         String NAME = PLAYER.getName();
-        Bat BAT = this.getEngine(PLAYER.getName()).getBat();
         IEngine ENGINE = this.getEngine(NAME);
-        BAT.setLeashHolder(null);
         ENGINE.uncuff();
-        ENGINE.getState().setHolder("");
         this.getEngine(HOLDER.getName()).getLeashed().remove(NAME);
         this.playCuffSound(List.of(PLAYER, HOLDER), Sound.valueOf(this.getModel().UNCUFF_SOUND));
         if(this.getModel().CONSOLE_LOG) this.getPlugin().getLogger().info(NAME + " uncuffed | Ex holder: " + HOLDER.getName());
