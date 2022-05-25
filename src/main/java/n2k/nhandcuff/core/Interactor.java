@@ -7,7 +7,6 @@ import n2k.nhandcuff.core.presenter.CommandPresenter;
 import n2k.nhandcuff.core.presenter.CuffPresenter;
 import n2k.nhandcuff.core.presenter.OtherPresenter;
 import n2k.nhandcuff.nHandCuff;
-import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Bat;
 import org.bukkit.entity.Player;
@@ -26,6 +25,9 @@ public class Interactor implements IInteractor {
         this.ENGINE_MAP = new HashMap<>();
         this.PLUGIN = PLUGIN;
     }
+    /**
+     * Инициализирует слушателей событий.
+     */
     @Override
     public void init() {
         this.PRESENTER_LIST.addAll(List.of(
@@ -35,24 +37,36 @@ public class Interactor implements IInteractor {
         ));
         this.PRESENTER_LIST.forEach(APresenter::init);
     }
+    /**
+     * Загружает и запускает движок по экземпляру класса игрока.
+     * @param PLAYER Игрок. Логично?
+     */
     @Override
     public void loadEngine(@NotNull Player PLAYER) {
         String NAME = PLAYER.getName();
-        if(!this.ENGINE_MAP.containsKey(NAME)) {
-            IEngine ENGINE = new Engine(this, PLAYER, false);
-            ENGINE.init();
-            ENGINE.start();
-            this.ENGINE_MAP.put(NAME, ENGINE);
-        }
+        if(this.ENGINE_MAP.containsKey(NAME)) return;
+        IEngine ENGINE = new Engine(this, PLAYER, false);
+        ENGINE.init();
+        ENGINE.start();
+        this.ENGINE_MAP.put(NAME, ENGINE);
     }
+    /**
+     * Выгружает и приостанавливает работу движка по никнейму игрока.
+     * @param NAME Ник игрока.
+     */
     @Override
     public void unloadEngine(String NAME) {
-        if(this.ENGINE_MAP.containsKey(NAME)) {
-            IEngine ENGINE = this.ENGINE_MAP.get(NAME);
-            ENGINE.stop();
-            this.ENGINE_MAP.remove(NAME);
-        }
+        if(!this.ENGINE_MAP.containsKey(NAME)) return;
+        IEngine ENGINE = this.ENGINE_MAP.get(NAME);
+        ENGINE.stop();
+        this.ENGINE_MAP.remove(NAME);
     }
+    /**
+     * Заковывает игрока наручники. Привязывает игрока к держателю.
+     * Отправляет сообщение, проигрывает звук и делает лог.
+     * @param PLAYER Игрок, который будет закован.
+     * @param HOLDER Игрок-держатель.
+     */
     @Override
     public void cuffPlayer(@NotNull Player PLAYER, Player HOLDER) {
         String NAME = PLAYER.getName();
@@ -62,13 +76,17 @@ public class Interactor implements IInteractor {
         ENGINE.getState().setHolder(HOLDER.getName());
         ENGINE.cuff();
         this.getEngine(HOLDER.getName()).getLeashed().add(NAME);
-        this.playSound(List.of(PLAYER, HOLDER), Sound.valueOf(this.getModel().CUFF_SOUND));
+        this.playCuffSound(List.of(PLAYER, HOLDER), Sound.valueOf(this.getModel().CUFF_SOUND));
         PLAYER.sendMessage(this.getModel().CUFF_MESSAGE);
         HOLDER.sendMessage(this.getModel().PLAYER_CUFF_MESSAGE.replace("{player}", NAME));
-        if(this.getModel().CONSOLE_LOG) {
-            this.getPlugin().getLogger().info(NAME + " cuffed | Holder: " + HOLDER.getName());
-        }
+        if(this.getModel().CONSOLE_LOG) this.getPlugin().getLogger().info(NAME + " cuffed | Holder: " + HOLDER.getName());
     }
+    /**
+     * Снимает с игрока наручники. Отвязывает от игрока держателя.
+     * Проигрывает звук и делает лог.
+     * @param PLAYER Игрок, закованный в наручники.
+     * @param HOLDER Игрок-держатель.
+     */
     @Override
     public void uncuffPlayer(@NotNull Player PLAYER, @NotNull Player HOLDER) {
         String NAME = PLAYER.getName();
@@ -78,31 +96,49 @@ public class Interactor implements IInteractor {
         ENGINE.uncuff();
         ENGINE.getState().setHolder("");
         this.getEngine(HOLDER.getName()).getLeashed().remove(NAME);
-        this.playSound(List.of(PLAYER, HOLDER), Sound.valueOf(this.getModel().UNCUFF_SOUND));
-        if(this.getModel().CONSOLE_LOG) {
-            this.getPlugin().getLogger().info(NAME + " uncuffed | Ex holder: " + HOLDER.getName());
-        }
+        this.playCuffSound(List.of(PLAYER, HOLDER), Sound.valueOf(this.getModel().UNCUFF_SOUND));
+        if(this.getModel().CONSOLE_LOG) this.getPlugin().getLogger().info(NAME + " uncuffed | Ex holder: " + HOLDER.getName());
     }
+    /**
+     * Дает тебе движок по имени игрока.
+     * @param NAME Имя игрока, соответсвенно.
+     * @return Вернет тебе null если ты быдло. А так, дает то, что ты от него ждешь.
+     */
     @Override
     public IEngine getEngine(String NAME) {
-        if(this.ENGINE_MAP.containsKey(NAME)) {
-            return this.ENGINE_MAP.get(NAME);
-        }
-        return null;
+        return this.ENGINE_MAP.getOrDefault(NAME, null);
     }
+    /**
+     * Дает плагин.
+     * @return У тебя своих нет?
+     */
     @Override
     public JavaPlugin getPlugin() {
         return this.PLUGIN;
     }
+    /**
+     * Возвращает мапу с движками.
+     * @return Я чето не так сказал? null не даст, не переживай.
+     */
     @Override
     public Map<String, IEngine> getEngineMap() {
         return this.ENGINE_MAP;
     }
+    /**
+     * Загадочный для многих функционал, понятный лишь мне.
+     * @return Загадочная штука, что дает доступ к параметрам конфига. Бойся.
+     */
     @Override
     public ConfigModel getModel() {
         return ((nHandCuff) this.getPlugin()).getJsonConfig().getJson();
     }
-    private void playSound(@NotNull List<Player> PLAYERS, Sound SOUND) {
+
+    /**
+     * Проигрывает со смешного анекдота.
+     * @param PLAYERS Игрок, с которым эта штука будет взаимодействовать.
+     * @param SOUND Анекдот.
+     */
+    private void playCuffSound(@NotNull List<Player> PLAYERS, Sound SOUND) {
         PLAYERS.forEach(PLAYER -> PLAYER.playSound(PLAYER.getLocation(), SOUND, 0.5F, 1));
     }
 }
